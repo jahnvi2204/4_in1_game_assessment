@@ -1,0 +1,10 @@
+node_modules
+frontend
+.git
+.gitignore
+*.md
+*.log
+connect-four-server
+connect-four.exe
+*.exe
+
