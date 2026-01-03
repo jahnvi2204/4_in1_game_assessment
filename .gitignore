@@ -44,3 +44,5 @@ Thumbs.db
 
 # Docker
 .docker/
+WHEN_TO_USE_DOCKER.md
+DEPLOY_WITHOUT_DOCKER.md
