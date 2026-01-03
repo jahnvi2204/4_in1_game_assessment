@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:15
@@ -37,11 +35,30 @@ services:
         condition: service_healthy
     restart: always
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/api/health", "||", "exit", "1"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3001/api/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 10s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_API_URL=${REACT_APP_API_URL:-http://localhost:3001}
+        - REACT_APP_WS_URL=${REACT_APP_WS_URL:-ws://localhost:3001/ws}
+    container_name: connectfour-frontend-prod
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    depends_on:
+      - backend
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   postgres_data:
